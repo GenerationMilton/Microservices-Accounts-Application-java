@@ -2,6 +2,7 @@ package com.livemilton.accounts.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,24 +13,25 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
+@MappedSuperclass
 @Getter
 @Setter
 @ToString
 public class BaseEntity {
 
-    @CreatedDate
+    //@CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    @CreatedBy
+    //@CreatedBy
     @Column(updatable = false)
     private String createdBy;
 
-    @LastModifiedDate
+    //@LastModifiedDate
     @Column(insertable = false)
     private LocalDateTime updatedAt;
 
-    @LastModifiedBy
+    //@LastModifiedBy
     @Column(insertable = false)
     private String updatedBy;
 
