@@ -1,10 +1,13 @@
 package com.livemilton.accounts.service.impl;
 
 import com.livemilton.accounts.constants.AccountsConstants;
+import com.livemilton.accounts.dto.AccountsDto;
 import com.livemilton.accounts.dto.CustomerDto;
 import com.livemilton.accounts.entity.Accounts;
 import com.livemilton.accounts.entity.Customer;
 import com.livemilton.accounts.exception.CustomerAlreadyExistException;
+import com.livemilton.accounts.exception.ResourcesNotFoundException;
+import com.livemilton.accounts.mapper.AccountsMapper;
 import com.livemilton.accounts.mapper.CustomerMapper;
 import com.livemilton.accounts.repository.AccountsRepository;
 import com.livemilton.accounts.repository.CustomerRepository;
@@ -60,4 +63,25 @@ public class AccountsServiceImpl implements IAccountsService {
         newAccount.setCreatedBy("Anonymous");
         return newAccount;
     }
+
+
+    /**
+     * @param mobileNumber _ Input Mobile Number
+     * @return Accounts Details based on a given mobileNumber
+     */
+    @Override
+    public CustomerDto fetchAccount(String mobileNumber) {
+        Customer customer = customerRepository.findByMobileNumber(mobileNumber).orElseThrow(
+                ()-> new ResourcesNotFoundException("Customer", "mobileNumber", mobileNumber)
+        );
+        Accounts accounts= accountsRepository.findByCustomerId(customer.getCustomerId()).orElseThrow(
+                ()-> new ResourcesNotFoundException("Account", "customerId", customer.getCustomerId().toString())
+        );
+        CustomerDto customerDto= CustomerMapper.mapToCustomerDto(customer, new CustomerDto());
+        customerDto.setAccountsDto(AccountsMapper.mapToAccountsDto(accounts, new AccountsDto()));
+
+        return customerDto;
+    }
+
+
 }
