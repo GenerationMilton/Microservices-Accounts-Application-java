@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.livemilton.accounts.constants.AccountsConstants;
+import com.livemilton.accounts.dto.AccountsContactInfoDto;
 import com.livemilton.accounts.dto.CustomerDto;
 import com.livemilton.accounts.dto.ErrorResponseDto;
 import com.livemilton.accounts.dto.ResponseDto;
@@ -48,6 +49,9 @@ public class AccountsController {
 
         @Autowired
         private Environment environment;
+
+        @Autowired
+        private AccountsContactInfoDto accountsContactInfoDto;
 
         @Operation(summary = "Create Account REST API", description = "REST API to create new Customer & Account inside livemiltonBank")
         @ApiResponse(responseCode = "201", description = "HTTP Status CREATED")
@@ -135,6 +139,18 @@ public class AccountsController {
                 return ResponseEntity
                                 .status(HttpStatus.OK)
                                 .body(environment.getProperty("JAVA_HOME"));
+        }
+
+        @Operation(summary = "Get Contact Info", description = "Contact Info details that can be reached out in case of any issues")
+        @ApiResponses({
+                        @ApiResponse(responseCode = "200", description = "HTTP Status OK"),
+                        @ApiResponse(responseCode = "500", description = "HTTP Status Internal Server Error", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+        })
+        @GetMapping("/contact-info")
+        public ResponseEntity<AccountsContactInfoDto> getContactInfo() {
+                return ResponseEntity
+                                .status(HttpStatus.OK)
+                                .body(accountsContactInfoDto);
         }
 
 }
